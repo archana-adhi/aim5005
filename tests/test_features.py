@@ -63,8 +63,31 @@ class TestFeatures(TestCase):
         assert (result == expected).all(), "Scaler transform does not return expected values. Expect {}. Got: {}".format(expected.reshape(1,-1), result.reshape(1,-1))
 
     # TODO: Add a test of your own below this line
-    #Custom test case    
+    #Custom test cases    
         
+    #1 To test std            
+    def test_standard_scaler_get_std(self):
+        scaler = StandardScaler()
+        data = [[0, 0], [0, 0], [1, 1], [1, 1]]
+        expected = np.array([0.5, 0.5])
+        scaler.fit(data)
+        assert (scaler.std == expected).all(), "scaler fit does not return expected std {}. Got {}".format(expected, scaler.std)        
+
+    #2 Testing standard scaler mean,std and transform with negative values 
+    def test_standard_scaler_with_negative_values(self):
+        scaler = StandardScaler()
+        data = [[-1, -2], [-3, -4], [-5, -6], [-7, -8]]
+        expected_mean = np.array([-4., -5.])
+        expected_std = np.array([2.23606798, 2.23606798])
+        expected_transformed_data = np.array([[ 1.34164079,  1.34164079], [ 0.4472136,  0.4472136], [-0.4472136, -0.4472136], [-1.34164079, -1.34164079]])
+        
+        transformed_data = scaler.fit_transform(data)
+        
+        assert (scaler.mean == expected_mean).all(), "Scaler mean does not match expected mean {}. Got {}".format(expected_mean, scaler.mean)
+        assert np.allclose(scaler.std, expected_std), "Scaler standard deviation does not match expected std {}. Got {}".format(expected_std, scaler.std)
+        assert np.allclose(transformed_data, expected_transformed_data), "Transformed data does not match expected value."  
+
+    #3 Inverse transform
     def test_standard_scaler_inverse_transform(self):
         scaler = StandardScaler()
         data = [[0, 0], [0, 0], [1, 1], [1, 1]]
